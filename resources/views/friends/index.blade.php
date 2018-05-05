@@ -4,12 +4,24 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h4 class="mb-4">Friends</h4>
+            <h4 class="mb-4">
+                Friends
+                <a href="{{ route('friend-requests.create') }}" class="btn btn-primary btn-sm ml-3">Add a friend</a>
+            </h4>
+
+            @include('alerts')
 
             @if($friends->isNotEmpty())
                 <div class="list-group">
                     @foreach($friends as $friend)
-                        <a href="#" class="list-group-item list-group-item-action">{{ $friend->name }}</a>
+                        <div class="list-group-item d-flex justify-content-between">
+                            <div class="p-2">{{ $friend->name }} ({{ $friend->email }})</div>
+                            <form action="{{ route('friends.destroy', $friend->id) }}" method="post" class="p-2 d-inline-block">
+                                @method('DELETE')
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-danger">Remove Friend</button>
+                            </form>
+                        </div>
                     @endforeach
                 </div>
             @else

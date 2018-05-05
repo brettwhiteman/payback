@@ -20,7 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('to_id')->unsigned();
             $table->foreign('to_id')->references('id')->on('users');
             $table->double('amount', 15, 2);
-            $table->string('description', 5000);
+            $table->string('description', 5000)->nullable();
             $table->timestamps();
         });
     }

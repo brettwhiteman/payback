@@ -13,7 +13,7 @@
 
                 <div class="form-group">
                     <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
-                        id="inputEmail" aria-describedby="emailHelp" placeholder="Enter friend&apos;s email address" required>
+                        aria-describedby="emailHelp" placeholder="Enter friend&apos;s email address" value="{{ old('email') }}" required>
 
                     @if($errors->has('email'))
                         <div class="invalid-feedback">{{ $errors->first('email') }}</div>

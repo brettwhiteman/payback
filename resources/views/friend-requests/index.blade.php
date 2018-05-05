@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <h4 class="mb-4">
                 Friend Requests
-                <a href="{{ route('friend-requests.create') }}" class="btn btn-primary btn-sm ml-3">Add a Friend</a>
+                <a href="{{ route('friend-requests.create') }}" class="btn btn-primary btn-sm ml-3">Send a friend request</a>
             </h4>
 
             @include('alerts')
@@ -50,7 +50,7 @@
                             @foreach($outgoing as $request)
                                 <div class="list-group-item d-flex justify-content-between">
                                     <div class="p-2">{{ $request->to->name }} ({{ $request->to->email }})</div>
-                                    <form action="{{ route('friend-requests.update', $request->id) }}" method="post" class="p-2 d-inline-block">
+                                    <form action="{{ route('friend-requests.destroy', $request->id) }}" method="post" class="p-2 d-inline-block">
                                         @method('DELETE')
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-danger">Delete Friend Request</button>

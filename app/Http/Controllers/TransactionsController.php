@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Transaction;
 use Illuminate\Http\Request;
 
@@ -33,7 +34,7 @@ class TransactionsController extends Controller
      */
     public function create()
     {
-        return view('transactions.create');
+        return view('transactions.create')->with('friends', auth()->user()->friends);
     }
 
     /**
@@ -44,7 +45,29 @@ class TransactionsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'type' => 'required|in:paid,received',
+            'user' => 'required|exists:users,id',
+            'amount' => 'required|numeric|max:1000000000',
+            'description' => 'string|max:5000|nullable'
+        ]);
+
+        if ($request->type == 'paid') {
+            $from = auth()->user();
+            $to = User::findOrFail($request->user);
+        } else {
+            $from = User::findOrFail($request->user);
+            $to = auth()->user();
+        }
+
+        $transaction = new Transaction;
+        $transaction->from()->associate($from);
+        $transaction->to()->associate($to);
+        $transaction->amount = (double)$request->amount;
+        $transaction->description = $request->description;
+        $transaction->save();
+
+        return redirect()->route('transactions.index')->with('success', 'Transaction created.');
     }
 
     /**

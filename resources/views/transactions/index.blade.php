@@ -6,8 +6,10 @@
         <div class="col-md-8">
             <h4 class="mb-4">
                 Transactions
-                <a href="{{ route('transactions.create') }}" class="btn btn-primary btn-sm ml-3">Add Transaction</a>
+                <a href="{{ route('transactions.create') }}" class="btn btn-primary btn-sm ml-3">Add transaction</a>
             </h4>
+
+            @include('alerts')
 
             @forelse($transactions as $transaction)
                 <div class="card mb-2">

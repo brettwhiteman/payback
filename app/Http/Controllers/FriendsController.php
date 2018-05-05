@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 
 class FriendsController extends Controller
@@ -35,6 +36,12 @@ class FriendsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = auth()->user();
+        $friend = User::findOrFail($id);
+
+        $user->friends()->detach($friend);
+        $friend->friends()->detach($user);
+
+        return redirect()->route('friends.index')->with('success', 'Friend removed.');
     }
 }
