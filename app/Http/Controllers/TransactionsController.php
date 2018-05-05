@@ -63,7 +63,7 @@ class TransactionsController extends Controller
         $transaction = new Transaction;
         $transaction->from()->associate($from);
         $transaction->to()->associate($to);
-        $transaction->amount = (double)$request->amount;
+        $transaction->amount = $request->amount;
         $transaction->description = $request->description;
         $transaction->save();
 
