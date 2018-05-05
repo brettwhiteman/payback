@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h4>
+            <h4 class="mb-4">
                 Friend Requests
                 <a href="{{ route('friend-requests.create') }}" class="btn btn-primary btn-sm ml-3">Add a Friend</a>
             </h4>
@@ -12,7 +12,7 @@
             @include('alerts')
 
             <div class="card my-4">
-                <div class="card-header">Incoming Friend Requests</div>
+                <div class="card-header">Received Friend Requests</div>
                 <div class="card-body">
                     @if($incoming->isNotEmpty())
                         <div class="list-group">
@@ -43,7 +43,7 @@
             </div>
 
             <div class="card">
-                <div class="card-header">Outgoing Friend Requests</div>
+                <div class="card-header">Sent Friend Requests</div>
                 <div class="card-body">
                     @if($outgoing->isNotEmpty())
                         <div class="list-group">

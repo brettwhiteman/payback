@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h4>Friends</h4>
+            <h4 class="mb-4">Friends</h4>
 
             @if($friends->isNotEmpty())
                 <div class="list-group">

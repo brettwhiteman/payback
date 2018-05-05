@@ -41,4 +41,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(FriendRequest::class, 'to_id');
     }
+
+    public function transactionsFrom()
+    {
+        return $this->hasMany(Transaction::class, 'from_id');
+    }
+
+    public function transactionsTo()
+    {
+        return $this->hasMany(Transaction::class, 'to_id');
+    }
 }
