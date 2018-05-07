@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use DB;
-use App\User;
-use App\FriendRequest;
+use App\Models\User;
+use App\Models\FriendRequest;
 use Illuminate\Http\Request;
 
 class FriendRequestsController extends Controller

@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Obligation extends Model
+class Transaction extends Model
 {
     public function from()
     {

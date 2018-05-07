@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class FriendsController extends Controller

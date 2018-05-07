@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use App\Transaction;
+use App\Models\User;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Events\TransactionCreated;
 
