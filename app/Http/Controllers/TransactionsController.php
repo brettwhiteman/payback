@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Models\User;
+use App\Models\Obligation;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Events\TransactionCreated;
 
 class TransactionsController extends Controller
 {
@@ -33,26 +34,54 @@ class TransactionsController extends Controller
         $request->validate([
             'type' => 'required|in:paid,received',
             'user' => 'required|exists:users,id',
-            'amount' => 'required|numeric|max:1000000000',
+            'amount' => 'required|numeric|max:1000000000|min:0.01',
             'description' => 'string|max:5000|nullable'
         ]);
 
         if ($request->type == 'paid') {
-            $from = auth()->user();
-            $to = User::findOrFail($request->user);
+            $transactionFrom = auth()->user();
+            $transactionTo = User::findOrFail($request->user);
         } else {
-            $from = User::findOrFail($request->user);
-            $to = auth()->user();
+            $transactionFrom = User::findOrFail($request->user);
+            $transactionTo = auth()->user();
         }
 
-        $transaction = new Transaction;
-        $transaction->from()->associate($from);
-        $transaction->to()->associate($to);
-        $transaction->amount = $request->amount;
-        $transaction->description = $request->description;
-        $transaction->save();
+        $amount = (double)$request->amount;
 
-        event(new TransactionCreated($transaction));
+        if ($transactionFrom->id > $transactionTo->id) {
+            $idStr = $transactionTo->id . '_' . $transactionFrom->id;
+        } else {
+            $idStr = $transactionFrom->id . '_' . $transactionTo->id;
+        }
+
+        $hash = hash('sha256', $idStr);
+
+        DB::transaction(function() use(&$request, &$transactionFrom, &$transactionTo, $amount, $hash) {
+            $transaction = new Transaction;
+            $transaction->from_id = $transactionFrom->id;
+            $transaction->to_id = $transactionTo->id;
+            $transaction->amount = $amount;
+            $transaction->description = $request->description;
+            $transaction->save();
+
+            $obligation = Obligation::where('hash', $hash)->first();
+
+            if (!$obligation) {
+                $obligation = new Obligation;
+                $obligation->from_id = $transactionTo->id;
+                $obligation->to_id = $transactionFrom->id;
+                $obligation->amount = $request->amount;
+                $obligation->hash = $hash;
+                $obligation->save();
+            } else {
+                if ($obligation->from_id == $transactionFrom->id) {
+                    $amount = -1.0 * $amount;
+                }
+
+                $obligation->amount += $amount;
+                $obligation->save();
+            }
+        });
 
         return redirect()->route('transactions.index')->with('success', 'Transaction created.');
     }

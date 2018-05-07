@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="form-group">
-                        <select name="user" class="form-control selectpicker {{ $errors->has('user') ? 'is-invalid' : '' }}" data-live-search="true">
+                        <select name="user" class="form-control selectpicker {{ $errors->has('user') ? 'is-invalid' : '' }}" data-live-search="true" required>
                             <option></option>
 
                             @foreach ($friends as $user)
@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="number" step=".01" name="amount" class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" placeholder="Amount" value="{{ old('amount') }}">
+                        <input type="number" step=".01" name="amount" class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" placeholder="Amount" value="{{ old('amount') }}" required>
 
                         @if($errors->has('amount'))
                             <div class="invalid-feedback">{{ $errors->first('amount') }}</div>

@@ -47,17 +47,16 @@ class FriendRequestsController extends Controller
             return $redirCreate->with('error', $to->email . ' is already a friend.');
         }
 
-        $friendRequest = new FriendRequest;
-        $friendRequest->from()->associate($from);
-        $friendRequest->to()->associate($to);
-
         if ($from->id > $to->id) {
-            $str = $to->id . $from->id;
+            $idStr = $to->id . '_' . $from->id;
         } else {
-            $str = $from->id . $to->id;
+            $idStr = $from->id . '_' . $to->id;
         }
 
-        $friendRequest->ids_hash = hash('sha256', $str);
+        $friendRequest = new FriendRequest;
+        $friendRequest->from_id = $from->id;
+        $friendRequest->to_id = $to->id;
+        $friendRequest->hash = hash('sha256', $idStr);
         $friendRequest->save();
 
         return redirect()->route('friend-requests.index')->with('success', 'Friend request sent.');

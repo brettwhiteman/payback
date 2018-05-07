@@ -19,8 +19,8 @@ class CreateFriendRequestsTable extends Migration
             $table->foreign('from_id')->references('id')->on('users');
             $table->integer('to_id')->unsigned();
             $table->foreign('to_id')->references('id')->on('users');
-            $table->string('ids_hash', 64);
-            $table->unique('ids_hash');
+            $table->string('hash', 64);
+            $table->unique('hash');
             $table->timestamps();
         });
     }
