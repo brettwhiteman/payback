@@ -13,16 +13,6 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-
-    ];
-
-    /**
-     * The subscriber classes to register.
-     *
-     * @var array
-     */
-    protected $subscribe = [
-
     ];
 
     /**
@@ -33,7 +23,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

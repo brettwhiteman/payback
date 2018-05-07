@@ -51,4 +51,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class, 'to_id');
     }
+
+    public function obligationsFrom()
+    {
+        return $this->hasMany(Obligation::class, 'from_id');
+    }
+
+    public function obligationsTo()
+    {
+        return $this->hasMany(Obligation::class, 'to_id');
+    }
 }

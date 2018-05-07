@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\User;
 use App\FriendRequest;
 use Illuminate\Http\Request;
 
 class FriendRequestsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $user = auth()->user();
@@ -23,22 +19,11 @@ class FriendRequestsController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('friend-requests.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -65,18 +50,19 @@ class FriendRequestsController extends Controller
         $friendRequest = new FriendRequest;
         $friendRequest->from()->associate($from);
         $friendRequest->to()->associate($to);
+
+        if ($from->id > $to->id) {
+            $str = $to->id . $from->id;
+        } else {
+            $str = $from->id . $to->id;
+        }
+
+        $friendRequest->ids_hash = hash('sha256', $str);
         $friendRequest->save();
 
         return redirect()->route('friend-requests.index')->with('success', 'Friend request sent.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $friendRequest = FriendRequest::find($id);
@@ -85,26 +71,21 @@ class FriendRequestsController extends Controller
         if (!$friendRequest) {
             $redir->with('error', 'Friend request does not exist.');
         } else if ((bool)$request->accepted) {
-            $friendRequest->from->friends()->attach($friendRequest->to);
-            $friendRequest->to->friends()->attach($friendRequest->from);
+            DB::transaction(function() use(&$friendRequest) {
+                $friendRequest->from->friends()->attach($friendRequest->to);
+                $friendRequest->to->friends()->attach($friendRequest->from);
+                $friendRequest->delete();
+            });
+
             $redir->with('success', 'Friend request accepted.');
         } else {
             $redir->with('success', 'Friend request declined.');
+            $friendRequest->delete();
         }
-
-        // make sure any duplicate friend requests that may have sneaked in are cleaned up
-        FriendRequest::where('from_id', $friendRequest->from->id)->where('to_id', $friendRequest->to->id)->delete();
-        FriendRequest::where('to_id', $friendRequest->from->id)->where('from_id', $friendRequest->to->id)->delete();
 
         return $redir;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $friendRequest = FriendRequest::find($id);

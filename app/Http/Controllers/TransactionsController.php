@@ -5,14 +5,10 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Transaction;
 use Illuminate\Http\Request;
+use App\Events\TransactionCreated;
 
 class TransactionsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $userId = auth()->user()->id;
@@ -27,22 +23,11 @@ class TransactionsController extends Controller
         return view('transactions.index')->with('transactions', $transactions);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('transactions.create')->with('friends', auth()->user()->friends);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -67,17 +52,13 @@ class TransactionsController extends Controller
         $transaction->description = $request->description;
         $transaction->save();
 
+        event(new TransactionCreated($transaction));
+
         return redirect()->route('transactions.index')->with('success', 'Transaction created.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
+
     }
 }
