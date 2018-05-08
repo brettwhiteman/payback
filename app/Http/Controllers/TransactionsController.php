@@ -17,9 +17,9 @@ class TransactionsController extends Controller
         $transactions = Transaction::where('transactions.from_id', $userId)->orWhere('transactions.to_id', $userId)
             ->join('users AS from_user', 'from_user.id', '=', 'transactions.from_id')
             ->join('users AS to_user', 'to_user.id', '=', 'transactions.to_id')
-            ->select('from_user.name AS from_name', 'to_user.name AS to_name', 'transactions.amount', 'transactions.description')
+            ->select('from_user.name AS from_name', 'to_user.name AS to_name', 'transactions.amount', 'transactions.description', 'transactions.created_at')
             ->orderBy('transactions.created_at', 'desc')
-            ->paginate(20);
+            ->paginate(3);
 
         return view('transactions.index')->with('transactions', $transactions);
     }
