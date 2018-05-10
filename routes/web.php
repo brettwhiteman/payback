@@ -18,7 +18,10 @@ Route::middleware('auth')->group(function() {
         return redirect()->route('transactions.index');
     });
 
-    Route::resource('friends', 'FriendsController')->only(['index', 'show', 'destroy']);
+    Route::resource('friends', 'FriendsController')->only(['index', 'destroy']);
     Route::resource('friend-requests', 'FriendRequestsController')->except(['show', 'edit']);
-    Route::resource('transactions', 'TransactionsController')->except(['edit', 'update', 'destroy']);
+    Route::resource('transactions', 'TransactionsController')->only(['index', 'create', 'store']);
+
+    Route::get('profile', 'ProfileController@index')->name('profile.index');
+    Route::put('profile', 'ProfileController@update')->name('profile.update');
 });

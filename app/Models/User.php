@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -60,5 +61,29 @@ class User extends Authenticatable
     public function obligationsTo()
     {
         return $this->hasMany(Obligation::class, 'to_id');
+    }
+
+    public function hasObligationToCurrentUser()
+    {
+        $obligation = $this->obligationsFrom()->where('to_id', Auth::user()->id)->first();
+
+        return $obligation != null && $obligation->amount > 0.0;
+    }
+
+    public function hasObligationFromCurrentUser()
+    {
+        $obligation = $this->obligationsTo()->where('from_id', Auth::user()->id)->first();
+
+        return $obligation != null && $obligation->amount > 0.0;
+    }
+
+    public function getObligationToCurrentUser()
+    {
+        return $this->obligationsFrom()->where('to_id', Auth::user()->id)->first();
+    }
+
+    public function getObligationFromCurrentUser()
+    {
+        return $this->obligationsTo()->where('from_id', Auth::user()->id)->first();
     }
 }

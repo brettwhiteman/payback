@@ -14,8 +14,17 @@
             @if($friends->isNotEmpty())
                 <div class="list-group">
                     @foreach($friends as $friend)
-                        <div class="list-group-item d-flex justify-content-between">
-                            <div class="p-2">{{ $friend->name }} ({{ $friend->email }})</div>
+                        <div class="list-group-item d-flex justify-content-between
+                            {{ $friend->getObligationToCurrentUser() ? 'owes-you' : '' }} {{ $friend->getObligationFromCurrentUser() ? 'you-owe' : '' }}">
+                            <div class="p-2">
+                                {{ $friend->name }}<br>
+
+                                @if($friend->hasObligationToCurrentUser())
+                                    <span style="color: #3a3">Owes you {{ number_format($friend->getObligationToCurrentUser()->amount, 2) }}</span>
+                                @elseif($friend->hasObligationFromCurrentUser())
+                                    <span style="color: #c33">You owe {{ number_format($friend->getObligationFromCurrentUser()->amount, 2) }}</span>
+                                @endif
+                            </div>
                             <form action="{{ route('friends.destroy', $friend->id) }}" method="post" class="p-2 d-inline-block">
                                 @method('DELETE')
                                 @csrf

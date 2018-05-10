@@ -13,15 +13,14 @@ class FriendsController extends Controller
         return view('friends.index')->with('friends', auth()->user()->friends);
     }
 
-    public function show($id)
-    {
-
-    }
-
     public function destroy($id)
     {
         $user = auth()->user();
         $friend = User::findOrFail($id);
+
+        if ($friend->hasObligationFromCurrentUser() || $friend->hasObligationToCurrentUser()) {
+            return redirect()->route('friends.index')->with('error', 'You must clear your balance before removing friend');
+        }
 
         DB::transaction(function() use(&$user, &$friend) {
             $user->friends()->detach($friend);

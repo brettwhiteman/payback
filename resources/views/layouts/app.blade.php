@@ -52,10 +52,21 @@
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
+                                    @if(Auth::user()->incomingFriendRequests()->count() > 0)
+                                        <span class="badge badge-primary badge-pill">{{ Auth::user()->incomingFriendRequests()->count() }}</span>
+                                    @endif
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('friend-requests.index') }}">Friend Requests</a>
+                                    <a class="dropdown-item" href="{{ route('friend-requests.index') }}">
+                                        Friend Requests
+                                        @if(Auth::user()->incomingFriendRequests()->count() > 0)
+                                            <span class="badge badge-primary badge-pill">{{ Auth::user()->incomingFriendRequests()->count() }}</span>
+                                        @endif
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('profile.index') }}">
+                                        Profile
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         Logout

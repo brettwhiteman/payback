@@ -19,7 +19,7 @@ class TransactionsController extends Controller
             ->join('users AS to_user', 'to_user.id', '=', 'transactions.to_id')
             ->select('from_user.name AS from_name', 'to_user.name AS to_name', 'transactions.amount', 'transactions.description', 'transactions.created_at')
             ->orderBy('transactions.created_at', 'desc')
-            ->paginate(3);
+            ->paginate(10);
 
         return view('transactions.index')->with('transactions', $transactions);
     }
@@ -75,19 +75,22 @@ class TransactionsController extends Controller
                 $obligation->save();
             } else {
                 if ($obligation->from_id == $transactionFrom->id) {
-                    $amount = -1.0 * $amount;
+                    $obligation->amount -= $amount;
+                } else {
+                    $obligation->amount += $amount;
                 }
 
-                $obligation->amount += $amount;
+                if ($obligation->amount < 0.0) {
+                    $tmp = $obligation->from_id;
+                    $obligation->from_id = $obligation->to_id;
+                    $obligation->to_id = $tmp;
+                    $obligation->amount *= -1.0;
+                }
+
                 $obligation->save();
             }
         });
 
         return redirect()->route('transactions.index')->with('success', 'Transaction created.');
-    }
-
-    public function show($id)
-    {
-
     }
 }

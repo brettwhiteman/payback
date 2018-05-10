@@ -11,8 +11,8 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        App\Models\User::create(['name' => 'John Smith', 'email' => 'john@example.com', 'password' => bcrypt('secret')]);
-        App\Models\User::create(['name' => 'Steve Smith', 'email' => 'steve@example.com', 'password' => bcrypt('secret')]);
-        App\Models\User::create(['name' => 'Alan Smith', 'email' => 'alan@example.com', 'password' => bcrypt('secret')]);
+        DB::table('users')->insert(['name' => 'John Smith', 'email' => 'john@example.com', 'password' => bcrypt('secret')]);
+        DB::table('users')->insert(['name' => 'Steve Smith', 'email' => 'steve@example.com', 'password' => bcrypt('secret')]);
+        DB::table('users')->insert(['name' => 'Alan Smith', 'email' => 'alan@example.com', 'password' => bcrypt('secret')]);
     }
 }
